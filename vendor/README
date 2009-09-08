@@ -1,0 +1,9 @@
+README
+
+TO INSTALL LUCENE-ANALYZERS
+---------------------------
+mvn install:install-file -Dfile=lucene-analyzers-2.0.0.jar -DgroupId=lucene -DartifactId=lucene-analyzers -Dversion=2.0.0 -Dpackaging=jar
+
+TO INSTALL LUCENE-HIGHLIGHT
+---------------------------
+mvn install:install-file -Dfile=lucene-highlighter-2.0.0.jar -DgroupId=lucene -DartifactId=lucene-highlighter -Dversion=2.0.0 -Dpackaging=jar

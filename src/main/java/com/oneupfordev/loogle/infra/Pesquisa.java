@@ -3,8 +3,6 @@
  */
 package com.oneupfordev.loogle.infra;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Sort;
 
@@ -14,8 +12,6 @@ import org.apache.lucene.search.Sort;
 public class Pesquisa {
 
 	private String termos;
-	private Analyzer analyser;
-	private ModoPesquisa modoPesquisa;
 	private String[] fields;
 	private Filter filter;
 	private Sort sort;
@@ -24,10 +20,6 @@ public class Pesquisa {
 	private int porPagina;
 	
 	public Pesquisa() {
-		analyser = new StandardAnalyzer(new String[] {
-				"de", "e", "a", "o", "do", "da", "nas", "em", "nos", "dos"
-		});
-		modoPesquisa = ModoPesquisa.FULL_TEXT_SEARCH;
 		maxResults = 100;
 		pagina = 1;
 		porPagina = 10;
@@ -44,12 +36,6 @@ public class Pesquisa {
 	}
 	public String[] getFields() {
 		return this.fields;
-	}
-	public Analyzer getAnalyser() {
-		return analyser;
-	}
-	public void setAnalyser(Analyzer analyser) {
-		this.analyser = analyser;
 	}
 	
 	public enum ModoPesquisa {

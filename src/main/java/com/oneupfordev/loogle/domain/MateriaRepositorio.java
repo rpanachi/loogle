@@ -90,13 +90,13 @@ public class MateriaRepositorio {
 
 	private void indexarMateria(final Materia materia) {
 		
-		LuceneUtil.indexar(Materia.class, new Field[] {
+		LuceneUtil.indexar(
 			new Field("id", materia.getId().toString(), Store.NO, Index.NOT_ANALYZED),
 			new Field("titulo", materia.getTitulo(), Store.YES, Index.ANALYZED),
 			new Field("autor", materia.getAutor(), Store.YES, Index.ANALYZED),
 			new Field("data", materia.getData().toString(), Store.YES, Index.NO),
 			new Field("texto", materia.getTexto(), Store.COMPRESS, Index.ANALYZED)
-		});
+		);
 		
 	}
 

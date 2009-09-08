@@ -8,10 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.analysis.br.BrazilianAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.analysis.standard.StandardFilter;
-import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Fieldable;
@@ -30,14 +28,18 @@ import org.apache.lucene.search.TopDocs;
  */
 public class LuceneUtil {
 
-	static final File INDEX_DIR = new File("index");
+	public static final File INDEX_DIR = new File("index");
 
-	public static void indexar(Class clazz, Field[] fields) {
+	public static final Analyzer DEFAULT_ANALYZER = new BrazilianAnalyzer(new String[] {
+				"de", "e", "a", "o", "do", "da", "nas", "em", "nos", "dos"
+		});
+
+	public static void indexar(Field... fields) {
 
 		try {
-
+			
 			IndexWriter writer = new IndexWriter(INDEX_DIR,
-					new StandardAnalyzer(), !INDEX_DIR.exists(),
+					DEFAULT_ANALYZER , !INDEX_DIR.exists(),
 					IndexWriter.MaxFieldLength.LIMITED);
 
 			Document doc = new Document();
@@ -51,32 +53,8 @@ public class LuceneUtil {
 			writer.close();
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new RuntimeException("Não foi possível indexar: " + ex.getMessage(), ex);
 		}
-	}
-
-	public static Document[] pesquisar(String[] fields, String termos)
-			throws Exception {
-
-		IndexReader reader = IndexReader.open(INDEX_DIR);
-
-		Searcher searcher = new IndexSearcher(reader);
-		Analyzer analyzer = new StandardAnalyzer();
-
-		QueryParser parser = new MultiFieldQueryParser(fields, analyzer);
-
-		Query query = parser.parse(termos);
-
-		TopDocs docs = searcher.search(query, 50);
-
-		List<Document> resultList = new ArrayList<Document>();
-
-		for (ScoreDoc score : docs.scoreDocs) {
-			Document doc = searcher.doc(score.doc);
-			resultList.add(doc);
-		}
-
-		return resultList.toArray(new Document[resultList.size()]);
 	}
 
 	public static Resultado pesquisar(Pesquisa pesquisa) {
@@ -85,7 +63,7 @@ public class LuceneUtil {
 
 			long start = System.currentTimeMillis();
 			
-			QueryParser parser = new MultiFieldQueryParser(pesquisa.getFields(), pesquisa.getAnalyser());
+			QueryParser parser = new MultiFieldQueryParser(pesquisa.getFields(), DEFAULT_ANALYZER);
 			Query query = parser.parse(pesquisa.getTermos());
 
 			IndexReader reader = IndexReader.open(INDEX_DIR);
