@@ -8,23 +8,19 @@ import java.util.List;
 
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.ForwardResolution;
-import net.sourceforge.stripes.action.HandlesEvent;
 import net.sourceforge.stripes.action.RedirectResolution;
 import net.sourceforge.stripes.action.Resolution;
+import net.sourceforge.stripes.action.SimpleMessage;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.integration.spring.SpringBean;
 import net.sourceforge.stripes.validation.SimpleError;
 import net.sourceforge.stripes.validation.Validate;
 import net.sourceforge.stripes.validation.ValidateNestedProperties;
 
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.Field.Index;
-import org.apache.lucene.document.Field.Store;
 import org.springframework.stereotype.Controller;
 
 import com.oneupfordev.loogle.domain.Materia;
 import com.oneupfordev.loogle.domain.MateriaRepositorio;
-import com.oneupfordev.loogle.infra.LuceneUtil;
 
 /**
  * MateriaActionBean
@@ -61,44 +57,37 @@ public class MateriaActionBean extends BaseActionBean {
 		return new ForwardResolution("/WEB-INF/jsp/materia/index.jsp");
 	}
 	
-	@HandlesEvent("new")
 	public Resolution create() {
 		materia = new Materia();
-		materia.setAutor("Rodrigo Panachi"); //usuário logado
+		materia.setAutor("Autor Exemplo"); //usuário logado
 		materia.setData(new Date()); //data atual
 		return new ForwardResolution("/WEB-INF/jsp/materia/edit.jsp");
 	}
-	
-	@HandlesEvent("edit")
+
 	public Resolution edit() {
 		materia = materias.get(getMateria().getId());
 		return new ForwardResolution("/WEB-INF/jsp/materia/edit.jsp");
 	}
 
-	@HandlesEvent("save")
 	public Resolution save() {
 		try {
-			
 			materias.save(materia);
-			indexarMateria(materia);
-			
 			return new RedirectResolution(MateriaActionBean.class);
-			
 		} catch (Exception ex) {
 			getContext().getValidationErrors().addGlobalError(new SimpleError(ex.getMessage()));
 			return getContext().getSourcePageResolution();
 		}
 	}
-	
-	public void indexarMateria(Materia materia) {
-		
-		LuceneUtil.indexar(Materia.class, new Field[] {
-			new Field("id", materia.getId().toString(), Store.NO, Index.NOT_ANALYZED),
-			new Field("titulo", materia.getTitulo(), Store.YES, Index.ANALYZED),
-			new Field("autor", materia.getAutor(), Store.YES, Index.ANALYZED),
-			new Field("data", materia.getData().toString(), Store.YES, Index.NO),
-			new Field("texto", materia.getTexto(), Store.COMPRESS, Index.ANALYZED)
-		});
-		
+
+	public Resolution loadSample() {
+		try {
+			materias.loadSample();
+			getContext().getMessages().add(new SimpleMessage("Amostras carregadas com sucesso."));
+			return new RedirectResolution(MateriaActionBean.class).flash(this);
+		} catch (Exception ex) {
+			getContext().getValidationErrors().addGlobalError(new SimpleError(ex.getMessage()));
+			return getContext().getSourcePageResolution();
+		}
 	}
+
 }

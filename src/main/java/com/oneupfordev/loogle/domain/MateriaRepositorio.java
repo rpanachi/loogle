@@ -3,14 +3,21 @@
  */
 package com.oneupfordev.loogle.domain;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.Field.Index;
+import org.apache.lucene.document.Field.Store;
 import org.springframework.orm.jpa.JpaTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.oneupfordev.loogle.infra.LuceneUtil;
 
 /**
  * Repositório de Matérias
@@ -44,6 +51,53 @@ public class MateriaRepositorio {
 		} else {
 			persistence.merge(materia);
 		}
+		indexarMateria(materia);
 		return materia;
 	}
+
+	public void loadSample() {
+		//textos retirados de: http://www.lerolero.com/
+		List<String> textos = new ArrayList<String>();
+		textos.add("Assim mesmo, a valorização de fatores subjetivos aponta para a melhoria dos relacionamentos verticais entre as hierarquias.");
+		textos.add("Não obstante, a contínua expansão de nossa atividade oferece uma interessante oportunidade para verificação de todos os recursos funcionais envolvidos.");
+		textos.add("Desta maneira, o julgamento imparcial das eventualidades garante a contribuição de um grupo importante na determinação dos modos de operação convencionais.");
+
+		textos.add("Neste sentido, a valorização de fatores subjetivos estimula a padronização das diversas correntes de pensamento.");
+		textos.add("Evidentemente, a mobilidade dos capitais internacionais cumpre um papel essencial na formulação dos relacionamentos verticais entre as hierarquias.");
+		textos.add("Neste sentido, a mobilidade dos capitais internacionais causa impacto indireto na reavaliação do fluxo de informações.");
+
+		textos.add("Desta maneira, a contínua expansão de nossa atividade maximiza as possibilidades por conta das diretrizes de desenvolvimento para o futuro.");
+		textos.add("A prática cotidiana prova que a crescente influência da mídia agrega valor ao estabelecimento do remanejamento dos quadros funcionais.");
+		textos.add("Neste sentido, o entendimento das metas propostas maximiza as possibilidades por conta das formas de ação.");
+
+		textos.add("Não obstante, a constante divulgação das informações exige a precisão e a definição do levantamento das variáveis envolvidas.");
+		textos.add("Não obstante, a contínua expansão de nossa atividade oferece uma interessante oportunidade para verificação das posturas dos órgãos dirigentes com relação às suas atribuições.");
+		textos.add("É importante questionar o quanto a expansão dos mercados mundiais cumpre um papel essencial na formulação dos conhecimentos estratégicos para atingir a excelência.");
+
+		int i = 1;
+		for (String texto : textos) {
+			Materia materia = new Materia();
+			materia.setAutor("Gerente " + i);
+			materia.setData(new Date());
+			materia.setTitulo("Lero lero " + i);
+			materia.setTexto(texto);
+			
+			save(materia);
+			
+			i++;
+		}
+	}
+
+	private void indexarMateria(final Materia materia) {
+		
+		LuceneUtil.indexar(Materia.class, new Field[] {
+			new Field("id", materia.getId().toString(), Store.NO, Index.NOT_ANALYZED),
+			new Field("titulo", materia.getTitulo(), Store.YES, Index.ANALYZED),
+			new Field("autor", materia.getAutor(), Store.YES, Index.ANALYZED),
+			new Field("data", materia.getData().toString(), Store.YES, Index.NO),
+			new Field("texto", materia.getTexto(), Store.COMPRESS, Index.ANALYZED)
+		});
+		
+	}
+
 }
