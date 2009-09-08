@@ -85,9 +85,6 @@ public class PesquisaActionBean extends BaseActionBean {
 		//setNumResultados(resultado.getOcorrencias());
 		//setResultados(resultado.getDocumentos());
 		
-		System.out.println(resultado.getPaginas());
-		System.out.println(resultado.getDocumentos());
-		
 		setResultado(resultado);
 		setPagina(2);
 		

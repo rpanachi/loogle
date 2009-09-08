@@ -13,7 +13,7 @@
 				<td><s:text name="materia.titulo" class="required" size="40"/></td>
 			</tr>
 			<tr>
-				<td>Autor</td>
+				<td>Texto</td>
 				<td><s:text name="materia.autor" class="required" size="40"/></td>
 			</tr>
 			<tr>

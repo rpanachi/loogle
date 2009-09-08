@@ -15,16 +15,16 @@
       <s:layout-component name="body">
       </s:layout-component>
     </div>
-    <div id="foot">
-		<hr/>
-		<ul>
-			<li>
-				<s:link href="${contextPath}/pesquisa.htm">Pesquisa</s:link>
-			</li>
-			<li>
-				<s:link href="${contextPath}/materias.htm">Matérias</s:link>
-			</li>
-		</ul>
+	<div id="foot">
+    <hr/>
+    <ul>
+      <li>
+        <s:link href="${contextPath}/pesquisa.htm">Pesquisa</s:link>
+      </li>
+      <li>
+        <s:link href="${contextPath}/materias.htm">Matérias</s:link>
+      </li>
+    </ul>
     </div>
   </body>
 </html>

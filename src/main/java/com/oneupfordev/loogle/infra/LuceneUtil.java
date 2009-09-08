@@ -46,7 +46,8 @@ public class LuceneUtil {
 			}
 
 			writer.addDocument(doc);
-			// writer.optimize();
+			writer.commit();
+			//writer.optimize();
 			writer.close();
 
 		} catch (Exception ex) {
@@ -106,7 +107,7 @@ public class LuceneUtil {
 			Document[] documentos = new Document[registrosAtuais];
 			int pos = 0;
 			for(int i = registroInicial; i < registroFinal; i++) {
-				documentos[pos++] = searcher.doc(i);				
+				documentos[pos++] = searcher.doc(docs.scoreDocs[i].doc);
 			}
 			result.setDocumentos(documentos);
 			

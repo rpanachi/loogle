@@ -2,27 +2,51 @@
 <%@ include file="/WEB-INF/jsp/taglibs.jsp" %>
 
 <s:layout-render name="/WEB-INF/jsp/layout.jsp" title="Matérias - Loogle">
-  <s:layout-component name="body">
 
+  <s:layout-component name="head">
+	<style>
+	  #cabecalho {
+	  	background-color: #bbb;
+	  	padding: 10px;
+	  	margin: 10px 0px;
+	  }
+	  .block {
+	  	overflow: hidden;
+	  	display: block;
+	  }
+	  .left {
+	    float: left;
+	  }
+	  .right {
+	    float: right;
+	  }
+	 
+	</style>
+  </s:layout-component>
+
+  <s:layout-component name="body">
 	<s:form action="/pesquisa.htm">
 		<table>
 			<tr>
 				<td>
-					<img src="${contextPath}/images/logo.png"/>
+				<img src="${contextPath}/images/logo.png"/>
 				</td>
-				<td>
-					<s:text name="query" title="Pesquisar" maxlength="2048" size="41"/>
-					<s:submit name="pesquisa" value="Pesquisa" style="margin: 0pt 2px 0pt 5px;"/>
-					<s:hidden name="pagina" value="${actionBean.pagina}"/>
-				</td>
+			<td>
+				<s:text name="query" title="Pesquisar" maxlength="2048" size="41"/>
+				<s:submit name="pesquisa" value="Pesquisa" style="margin: 0pt 2px 0pt 5px;"/>
+				<s:hidden name="pagina" value="${actionBean.pagina}"/>
+			</td>
 			</tr>
 		</table>
 	</s:form>
 
-	<h2>Resultados (${actionBean.resultado.ocorrencias})</h2>
-	<c:if test="${actionBean.resultado.ocorrencias > 0}">
-		<p>A pesquisa demorou ${actionBean.resultado.duracao/1000} segundos</p>
-	
+	<c:if test="${actionBean.resultado != null}">
+
+		<div id="cabecalho" class="block">
+			<b class="left">Resultados (${actionBean.resultado.ocorrencias})</b>
+			<span class="right">A pesquisa demorou ${actionBean.resultado.duracao/1000} segundos</span>			
+		</div>
+
 		<c:forEach items="${actionBean.resultado.documentos}" var="resultado">
 		<li>
 			<h3><%= ((Document)pageContext.getAttribute("resultado")).get("titulo") %></h3>
@@ -32,9 +56,10 @@
 	
 		<s:form beanclass="${actionBean.class}">
 			<s:hidden name="query" />
-			<s:hidden name="proximaPagina" value="2"/>
+			<s:hidden name="proximaPagina" value="${resultado.proximaPagina}"/>
 			<s:submit name="pesquisa" value="Próximo"/>
 		</s:form>
+
 	</c:if>
 
   </s:layout-component>

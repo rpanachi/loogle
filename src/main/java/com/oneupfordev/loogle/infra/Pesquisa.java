@@ -5,7 +5,6 @@ package com.oneupfordev.loogle.infra;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.search.FieldSortedHitQueue;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Sort;
 
