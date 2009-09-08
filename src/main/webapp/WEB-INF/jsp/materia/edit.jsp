@@ -6,16 +6,19 @@
 	<s:form beanclass="${actionBean.class}">
 		<s:errors/>
 		<s:hidden name="materia.id"/>
-		<s:hidden name="materia.autor"/>
 		<s:hidden name="materia.data"/>
 		<table class="form">
 			<tr>
 				<td>Titulo</td>
-				<td><s:text name="materia.titulo" class="required"/></td>
+				<td><s:text name="materia.titulo" class="required" size="40"/></td>
+			</tr>
+			<tr>
+				<td>Autor</td>
+				<td><s:text name="materia.autor" class="required" size="40"/></td>
 			</tr>
 			<tr>
 				<td>Texto</td>
-				<td><s:textarea name="materia.texto" class="required"/></td>
+				<td><s:textarea name="materia.texto" class="required" rows="20" cols="100"/></td>
 			</tr>
 			<tr>
 				<td>&nbsp;</td>

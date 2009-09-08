@@ -78,7 +78,7 @@ public class PesquisaActionBean extends BaseActionBean {
 		
 		Pesquisa pesquisa = new Pesquisa();
 		pesquisa.setTermos(query);
-		pesquisa.setFields("titulo", "texto");
+		pesquisa.setFields("titulo", "texto", "autor");
 		pesquisa.setPagina(pagina);
 		
 		Resultado resultado = LuceneUtil.pesquisar(pesquisa);

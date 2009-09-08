@@ -49,6 +49,7 @@ public class MateriaActionBean extends BaseActionBean {
 
 	@ValidateNestedProperties({
 	    @Validate(field="titulo", required=true, maxlength=50, on="save"),
+	    @Validate(field="autor", required=true, maxlength=50, on="save"),
 	    @Validate(field="texto", required=true, maxlength=200, on="save")
 	})
 	public void setMateria(Materia materia) {
