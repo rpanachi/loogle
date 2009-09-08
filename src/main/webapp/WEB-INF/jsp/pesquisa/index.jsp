@@ -29,7 +29,7 @@
 		<table>
 			<tr>
 				<td>
-				<img src="${contextPath}/images/logo.png"/>
+				<img src="${contextPath}/images/logo.gif" width="150" height="75"/>
 				</td>
 			<td>
 				<s:text name="query" title="Pesquisar" maxlength="2048" size="41"/>
@@ -49,7 +49,10 @@
 
 		<c:forEach items="${actionBean.resultado.documentos}" var="resultado">
 		<li>
-			<h3><%= ((Document)pageContext.getAttribute("resultado")).get("titulo") %></h3>
+			<h3>
+				<%= ((Document)pageContext.getAttribute("resultado")).get("titulo") %>
+				&nbsp; por &nbsp; <%= ((Document)pageContext.getAttribute("resultado")).get("autor") %>
+			</h3>
 			<p><%= ((Document)pageContext.getAttribute("resultado")).get("texto") %></p>
 		</li>
 		</c:forEach>

@@ -66,8 +66,7 @@ public class PesquisaActionBean extends BaseActionBean {
 	public Resolution index() {
 		return new ForwardResolution("/WEB-INF/jsp/pesquisa/index.jsp");
 	}
-	
-	@HandlesEvent("pesquisa")
+
 	public Resolution pesquisa() throws Exception {
 		
 		/*
@@ -90,6 +89,5 @@ public class PesquisaActionBean extends BaseActionBean {
 		
 		return new ForwardResolution("/WEB-INF/jsp/pesquisa/index.jsp");
 	}
-	
-	
+
 }
