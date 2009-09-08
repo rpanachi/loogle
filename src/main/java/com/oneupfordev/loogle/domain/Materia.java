@@ -26,7 +26,7 @@ public class Materia {
 	@Column
 	private String titulo;
 
-	@Column
+	@Column(length=5000)
 	private String texto;
 
 	@Column

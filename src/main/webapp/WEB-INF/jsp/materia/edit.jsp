@@ -13,7 +13,7 @@
 				<td><s:text name="materia.titulo" class="required" size="40"/></td>
 			</tr>
 			<tr>
-				<td>Texto</td>
+				<td>Autor</td>
 				<td><s:text name="materia.autor" class="required" size="40"/></td>
 			</tr>
 			<tr>
@@ -22,7 +22,10 @@
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
-				<td><s:submit name="save" value="Confirmar"/><s:submit name="cancel" value="Cancelar"/></td>
+				<td>
+					<s:submit name="save" value="Confirmar"/>
+					<s:submit name="cancel" value="Cancelar"/>
+				</td>
 			</tr>
 		</table>
 	</s:form>
