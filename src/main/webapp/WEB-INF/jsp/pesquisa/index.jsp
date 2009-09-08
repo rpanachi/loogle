@@ -44,7 +44,7 @@
 
 		<div id="cabecalho" class="block">
 			<b class="left">Resultados (${actionBean.resultado.ocorrencias})</b>
-			<span class="right">A pesquisa demorou ${actionBean.resultado.duracao/1000} segundos</span>			
+			<span class="right">A pesquisa por <b>"${actionBean.query}"</b> demorou ${actionBean.resultado.duracao/1000} segundos</span>			
 		</div>
 
 		<c:forEach items="${actionBean.resultado.documentos}" var="resultado">
