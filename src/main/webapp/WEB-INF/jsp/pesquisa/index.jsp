@@ -56,12 +56,6 @@
 			<p><%= ((Document)pageContext.getAttribute("resultado")).get("texto") %></p>
 		</li>
 		</c:forEach>
-	
-		<s:form beanclass="${actionBean.class}">
-			<s:hidden name="query" />
-			<s:hidden name="proximaPagina" value="${resultado.proximaPagina}"/>
-			<s:submit name="pesquisa" value="Próximo"/>
-		</s:form>
 
 	</c:if>
 
