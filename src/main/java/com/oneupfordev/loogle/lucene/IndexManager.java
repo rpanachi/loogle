@@ -65,7 +65,7 @@ public class IndexManager {
 			Query query = parser.parse(options.getTerms());
 			
 			Scorer scorer = new QueryScorer(query);
-			Formatter formatter = new SimpleHTMLFormatter("<span style=\"color: rgb(255,0,0); font-weight: bold;\">", "</span>");
+			Formatter formatter = new SimpleHTMLFormatter("<span class=\"highlight\">", "</span>");
 			Highlighter highlighter = new Highlighter(formatter, scorer);
 			highlighter.setTextFragmenter(new SimpleFragmenter(50));
 			options.getIndexable().setHighlighter(highlighter);

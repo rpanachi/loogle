@@ -3,6 +3,7 @@
  */
 package com.oneupfordev.loogle.domain;
 
+import java.io.IOException;
 import java.io.StringReader;
 
 import net.sourceforge.stripes.integration.spring.SpringHelper;
@@ -71,26 +72,34 @@ public class MateriaIndex implements Indexable<Materia> {
 	}
 	
 	private void processHighlight(Materia materia) {
-		if (getHighlighter() != null) {
-			try {
-				TokenStream tokenStream = IndexManager.BRAZILIAN_ANALYZER.tokenStream("texto", new StringReader(materia.getTexto()));
-				String highlightedText = getHighlighter().getBestFragments(tokenStream, materia.getTexto(), 15, "...");
-				if (!highlightedText.isEmpty()) {
-					materia.setTexto(highlightedText);
-				}
-				tokenStream = IndexManager.BRAZILIAN_ANALYZER.tokenStream("titulo", new StringReader(materia.getTitulo()));
-				highlightedText = getHighlighter().getBestFragments(tokenStream, materia.getTitulo(), 15, "...");
-				if (!highlightedText.isEmpty()) {
-					materia.setTitulo(highlightedText);
-				}
-				tokenStream = IndexManager.BRAZILIAN_ANALYZER.tokenStream("autor", new StringReader(materia.getAutor()));
-				highlightedText = getHighlighter().getBestFragments(tokenStream, materia.getAutor(), 15, "...");
-				if (!highlightedText.isEmpty()) {
-					materia.setAutor(highlightedText);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+
+		if (getHighlighter() == null) {
+			return;
+		}
+
+		try {
+			String highlightedText = highlightText("texto", materia.getTexto());
+			if (!highlightedText.isEmpty()) {
+				materia.setTexto(highlightedText);
 			}
+			highlightedText = highlightText("titulo", materia.getTitulo());
+			if (!highlightedText.isEmpty()) {
+				materia.setTitulo(highlightedText);
+			}
+			highlightedText = highlightText("autor", materia.getAutor());
+			if (!highlightedText.isEmpty()) {
+				materia.setAutor(highlightedText);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
+
+	private String highlightText(final String fieldName, final String fieldValue) throws IOException {
+		TokenStream tokenStream = IndexManager.BRAZILIAN_ANALYZER.tokenStream(fieldName, new StringReader(fieldValue));
+		String highlightedText = getHighlighter().getBestFragments(tokenStream, fieldValue, 15, "...");
+		return highlightedText;
+	}
+
 }

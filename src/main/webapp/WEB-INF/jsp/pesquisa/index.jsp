@@ -20,7 +20,10 @@
 	  .right {
 	    float: right;
 	  }
-	 
+	  .highlight {
+	    color: black;
+	    background-color: #FFFF66;
+	  }
 	</style>
   </s:layout-component>
 
