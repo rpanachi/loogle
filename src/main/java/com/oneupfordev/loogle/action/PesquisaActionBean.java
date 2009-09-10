@@ -5,16 +5,18 @@ package com.oneupfordev.loogle.action;
 
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.ForwardResolution;
-import net.sourceforge.stripes.action.HandlesEvent;
 import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.UrlBinding;
+import net.sourceforge.stripes.integration.spring.SpringBean;
 
-import org.apache.lucene.document.Document;
 import org.springframework.stereotype.Controller;
 
-import com.oneupfordev.loogle.infra.LuceneUtil;
-import com.oneupfordev.loogle.infra.Pesquisa;
-import com.oneupfordev.loogle.infra.Resultado;
+import com.oneupfordev.loogle.domain.Materia;
+import com.oneupfordev.loogle.domain.MateriaIndex;
+import com.oneupfordev.loogle.domain.MateriaRepositorio;
+import com.oneupfordev.loogle.lucene.IndexManager;
+import com.oneupfordev.loogle.lucene.SearchOptions;
+import com.oneupfordev.loogle.lucene.SearchResult;
 
 /**
  * PesquisaActionBean
@@ -23,12 +25,12 @@ import com.oneupfordev.loogle.infra.Resultado;
 @UrlBinding("/pesquisa.htm")
 public class PesquisaActionBean extends BaseActionBean {
 
-	private String query;
-	private Integer numResultados;
-	private Document[] resultados;
-	private Integer pagina = 1;
+	@SpringBean
+	private MateriaRepositorio repositorio;
 	
-	private Resultado resultado;
+	private String query;
+	private Integer pagina = 1;
+	private SearchResult<Materia> resultado;
 	
 	public String getQuery() {
 		return query;
@@ -36,29 +38,16 @@ public class PesquisaActionBean extends BaseActionBean {
 	public void setQuery(String query) {
 		this.query = query;
 	}
-	
-	public Integer getNumResultados() {
-		return numResultados;
-	}
-	public void setNumResultados(Integer numResultados) {
-		this.numResultados = numResultados;
-	}
-	public Document[] getResultados() {
-		return resultados;
-	}
-	public void setResultados(Document[] results) {
-		this.resultados = results;
-	}
 	public void setPagina(Integer pagina) {
 		this.pagina = pagina;
 	}
 	public Integer getPagina() {
 		return pagina;
 	}
-	public Resultado getResultado() {
+	public SearchResult<Materia> getResultado() {
 		return resultado;
 	}
-	public void setResultado(Resultado resultado) {
+	public void setResultado(SearchResult<Materia> resultado) {
 		this.resultado = resultado;
 	}
 	
@@ -69,23 +58,17 @@ public class PesquisaActionBean extends BaseActionBean {
 
 	public Resolution pesquisa() throws Exception {
 		
-		/*
-		Document[] results = LuceneUtil.pesquisar(new String[] {"titulo", "texto"}, query);
-		setNumResultados(results.length);
-		setResultados(results);
-		*/
+	
+		MateriaIndex index = new MateriaIndex();
+		index.setRepositorio(repositorio);
 		
-		Pesquisa pesquisa = new Pesquisa();
-		pesquisa.setTermos(query);
-		pesquisa.setFields("titulo", "texto", "autor");
-		pesquisa.setPagina(pagina);
+		SearchOptions<Materia> options = new SearchOptions<Materia>(index);
+		options.setTerms(query);
+		options.setFields("titulo", "texto", "autor");
+		options.setPage(pagina);
 		
-		Resultado resultado = LuceneUtil.pesquisar(pesquisa);
-		//setNumResultados(resultado.getOcorrencias());
-		//setResultados(resultado.getDocumentos());
-		
+		SearchResult<Materia> resultado = IndexManager.execute(options);
 		setResultado(resultado);
-		setPagina(2);
 		
 		return new ForwardResolution("/WEB-INF/jsp/pesquisa/index.jsp");
 	}

@@ -43,17 +43,14 @@
 	<c:if test="${actionBean.resultado != null}">
 
 		<div id="cabecalho" class="block">
-			<b class="left">Resultados (${actionBean.resultado.ocorrencias})</b>
-			<span class="right">A pesquisa por <b>"${actionBean.query}"</b> demorou ${actionBean.resultado.duracao/1000} segundos</span>			
+			<b class="left">Resultados (${actionBean.resultado.occurrences})</b>
+			<span class="right">A pesquisa por <b>"${actionBean.query}"</b> demorou ${actionBean.resultado.duration/1000} segundos</span>			
 		</div>
 
-		<c:forEach items="${actionBean.resultado.documentos}" var="resultado">
+		<c:forEach items="${actionBean.resultado.results}" var="resultado">
 		<li>
-			<h3>
-				<%= ((Document)pageContext.getAttribute("resultado")).get("titulo") %>
-				&nbsp; por &nbsp; <%= ((Document)pageContext.getAttribute("resultado")).get("autor") %>
-			</h3>
-			<p><%= ((Document)pageContext.getAttribute("resultado")).get("texto") %></p>
+			<h3>${resultado.titulo} por ${resultado.autor}</h3>
+			<p>${resultado.texto}</p>
 		</li>
 		</c:forEach>
 

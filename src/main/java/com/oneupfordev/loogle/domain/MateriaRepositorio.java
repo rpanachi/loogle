@@ -10,14 +10,11 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.Field.Index;
-import org.apache.lucene.document.Field.Store;
 import org.springframework.orm.jpa.JpaTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.oneupfordev.loogle.infra.LuceneUtil;
+import com.oneupfordev.loogle.lucene.IndexManager;
 
 /**
  * Repositório de Matérias
@@ -84,20 +81,18 @@ public class MateriaRepositorio {
 			
 			save(materia);
 			
+			try {
+			Thread.sleep(1000);
+			} catch (Exception ex) {}
+			
 			i++;
 		}
 	}
 
 	private void indexarMateria(final Materia materia) {
-		
-		LuceneUtil.indexar(
-			new Field("id", materia.getId().toString(), Store.NO, Index.NOT_ANALYZED),
-			new Field("titulo", materia.getTitulo(), Store.YES, Index.ANALYZED),
-			new Field("autor", materia.getAutor(), Store.YES, Index.ANALYZED),
-			new Field("data", materia.getData().toString(), Store.YES, Index.NO),
-			new Field("texto", materia.getTexto(), Store.COMPRESS, Index.ANALYZED)
-		);
-		
+
+		MateriaIndex indexObj = new MateriaIndex(materia);
+		IndexManager.index(indexObj);
 	}
 
 }

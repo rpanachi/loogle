@@ -17,7 +17,7 @@ public interface Indexable <T> {
 	
 	T loadModel(Document document);
 	
-	T processHighlight(Highlighter highligh, T model);
-	
-	
+	void setHighlighter(Highlighter highlighter);
+
+	//Document getDocument();
 }
