@@ -52,7 +52,8 @@
 
 		<c:forEach items="${actionBean.resultado.results}" var="resultado">
 		<li>
-			<h3>${resultado.titulo} por ${resultado.autor}</h3>
+			<h3>${resultado.titulo}</h3>
+			<span>Por <i>${resultado.autor}</i> em <i>${resultado.data}</i></span>
 			<p>${resultado.texto}</p>
 		</li>
 		</c:forEach>
