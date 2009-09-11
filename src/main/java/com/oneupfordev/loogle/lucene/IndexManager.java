@@ -56,26 +56,22 @@ public class IndexManager {
 		}
 	}
 
-	public static <T> SearchResult<T> execute(SearchOptions<T> options) {
+	public static <T> SearchResult<T> execute(final SearchOptions<T> options) {
 		try {
-
 			long start = System.currentTimeMillis();
 			
 			QueryParser parser = new MultiFieldQueryParser(options.getFields(), BRAZILIAN_ANALYZER);
 			Query query = parser.parse(options.getTerms());
-			
-			Scorer scorer = new QueryScorer(query);
-			Formatter formatter = new SimpleHTMLFormatter("<span class=\"highlight\">", "</span>");
-			Highlighter highlighter = new Highlighter(formatter, scorer);
-			highlighter.setTextFragmenter(new SimpleFragmenter(50));
+
+			Highlighter highlighter = buildHighlighter(query);
 			options.getIndexable().setHighlighter(highlighter);
 			
 			IndexReader reader = IndexReader.open(INDEX_DIR);
 			Searcher searcher = new IndexSearcher(reader);
-
-			TopDocs topDocs = searcher.search(query, options.getMaxResults());
 			
-			SearchResult<T> result = new SearchResult<T>();			
+			TopDocs topDocs = searcher.search(query, null, options.getMaxResults(), options.getSort());
+			
+			SearchResult<T> result = new SearchResult<T>();
 			result.setOccurrences(topDocs.totalHits);
 			
 			for (ScoreDoc scoreDoc : topDocs.scoreDocs) {
@@ -102,12 +98,16 @@ public class IndexManager {
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			return null;
+			throw new RuntimeException(ex);
 		}
 	}
-	
-	public void otimize() {
-		
+
+	private static Highlighter buildHighlighter(final Query query) {
+		Scorer scorer = new QueryScorer(query);
+		Formatter formatter = new SimpleHTMLFormatter("<span class=\"highlight\">", "</span>");
+		Highlighter highlighter = new Highlighter(formatter, scorer);
+		highlighter.setTextFragmenter(new SimpleFragmenter(50));
+		return highlighter;
 	}
-	
+
 }

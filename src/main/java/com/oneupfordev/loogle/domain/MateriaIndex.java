@@ -6,9 +6,8 @@ package com.oneupfordev.loogle.domain;
 import java.io.IOException;
 import java.io.StringReader;
 
-import net.sourceforge.stripes.integration.spring.SpringHelper;
-
 import org.apache.lucene.analysis.TokenStream;
+import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
@@ -54,12 +53,13 @@ public class MateriaIndex implements Indexable<Materia> {
 	}
 
 	public Field[] getIndexFields() {
+		String data = DateTools.dateToString(materia.getData(), DateTools.Resolution.SECOND);
 		return new Field[] {
 				new Field("id", materia.getId().toString(), Store.YES, Index.NO),
 				new Field("autor", materia.getAutor(), Store.NO, Index.NOT_ANALYZED),
 				new Field("titulo", materia.getTitulo(), Store.NO, Index.ANALYZED),
 				new Field("texto", materia.getTexto(), Store.NO, Index.ANALYZED),
-				new Field("data", materia.getData().toString(), Store.NO, Index.NOT_ANALYZED)
+				new Field("data", data, Store.NO, Index.NOT_ANALYZED)
 		};
 	}
 	
@@ -79,17 +79,14 @@ public class MateriaIndex implements Indexable<Materia> {
 
 		try {
 			String highlightedText = highlightText("texto", materia.getTexto());
-			if (!highlightedText.isEmpty()) {
-				materia.setTexto(highlightedText);
-			}
+			materia.setTexto(highlightedText);
+
 			highlightedText = highlightText("titulo", materia.getTitulo());
-			if (!highlightedText.isEmpty()) {
-				materia.setTitulo(highlightedText);
-			}
+			materia.setTitulo(highlightedText);
+
 			highlightedText = highlightText("autor", materia.getAutor());
-			if (!highlightedText.isEmpty()) {
-				materia.setAutor(highlightedText);
-			}
+			materia.setAutor(highlightedText);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
@@ -99,6 +96,10 @@ public class MateriaIndex implements Indexable<Materia> {
 	private String highlightText(final String fieldName, final String fieldValue) throws IOException {
 		TokenStream tokenStream = IndexManager.BRAZILIAN_ANALYZER.tokenStream(fieldName, new StringReader(fieldValue));
 		String highlightedText = getHighlighter().getBestFragments(tokenStream, fieldValue, 15, "...");
+
+		if (highlightedText.isEmpty()) {
+			highlightedText = fieldValue;
+		}
 		return highlightedText;
 	}
 

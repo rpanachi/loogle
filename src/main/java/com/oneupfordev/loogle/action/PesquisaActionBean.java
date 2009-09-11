@@ -9,6 +9,7 @@ import net.sourceforge.stripes.action.Resolution;
 import net.sourceforge.stripes.action.UrlBinding;
 import net.sourceforge.stripes.integration.spring.SpringBean;
 
+import org.apache.lucene.search.Sort;
 import org.springframework.stereotype.Controller;
 
 import com.oneupfordev.loogle.domain.Materia;
@@ -66,6 +67,7 @@ public class PesquisaActionBean extends BaseActionBean {
 		options.setTerms(query);
 		options.setFields("titulo", "texto", "autor");
 		options.setPage(pagina);
+		options.setSort(new Sort("data", true));
 		
 		SearchResult<Materia> resultado = IndexManager.execute(options);
 		setResultado(resultado);
