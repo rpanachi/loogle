@@ -67,7 +67,7 @@ public class PesquisaActionBean extends BaseActionBean {
 		options.setTerms(query);
 		options.setFields("titulo", "texto", "autor");
 		options.setPage(pagina);
-		options.setSort(new Sort("data", false)); //mais recentes primeiro
+		options.setSort(new Sort("data", true)); //mais recentes primeiro
 		
 		SearchResult<Materia> resultado = IndexManager.execute(options);
 		setResultado(resultado);

@@ -91,6 +91,8 @@ public class MateriaRepositorio {
 
 	private void indexarMateria(final Materia materia) {
 
+		IndexManager.remove(materia.getId());
+		
 		MateriaIndex indexObj = new MateriaIndex(materia);
 		IndexManager.index(indexObj);
 	}

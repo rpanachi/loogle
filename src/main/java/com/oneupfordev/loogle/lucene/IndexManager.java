@@ -4,6 +4,10 @@
 package com.oneupfordev.loogle.lucene;
 
 import java.io.File;
+import java.io.Serializable;
+
+import java.util.List;
+import java.util.ArrayList;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.br.BrazilianAnalyzer;
@@ -18,6 +22,8 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.index.Term;
+//import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.highlight.Formatter;
 import org.apache.lucene.search.highlight.Highlighter;
 import org.apache.lucene.search.highlight.QueryScorer;
@@ -33,20 +39,39 @@ public class IndexManager {
 	public static final Analyzer BRAZILIAN_ANALYZER = new BrazilianAnalyzer();
 	public static final File INDEX_DIR = new File("index");
 	
+	protected static IndexReader getReader() throws Exception {
+		return IndexReader.open(INDEX_DIR);
+	}
+	
+	protected static IndexWriter getWriter() throws Exception {
+		return new IndexWriter(INDEX_DIR,
+				BRAZILIAN_ANALYZER , !INDEX_DIR.exists() || !INDEX_DIR.canRead(),
+				IndexWriter.MaxFieldLength.LIMITED);
+	}
+	
 	public static <T> boolean index(Indexable<T> objIndexable) {
+
+		List<Indexable<T>> list = new ArrayList<Indexable<T>>();
+		list.add(objIndexable);
+		return IndexManager.index(list);
+
+	}
+	
+	public static <T> boolean index(List<? extends Indexable<T>> objects) {
 		
 		try {
 			
-			IndexWriter writer = new IndexWriter(INDEX_DIR,
-					BRAZILIAN_ANALYZER , !INDEX_DIR.exists() || !INDEX_DIR.canRead(),
-					IndexWriter.MaxFieldLength.LIMITED);
+			IndexWriter writer = getWriter();
 
-			Document docToIndex = new Document();
-			for (Field field : objIndexable.getIndexFields()) {
-				docToIndex.add(field);
+			for (Indexable<T> objIndexable : objects) {
+				Document docToIndex = new Document();
+				for (Field field : objIndexable.getIndexFields()) {
+					docToIndex.add(field);
+				}
+				writer.addDocument(docToIndex);
 			}
-			writer.addDocument(docToIndex);
 			writer.commit();
+			writer.optimize();
 			writer.close();
 			
 			return true;
@@ -57,6 +82,7 @@ public class IndexManager {
 	}
 
 	public static <T> SearchResult<T> execute(final SearchOptions<T> options) {
+		
 		try {
 			long start = System.currentTimeMillis();
 			
@@ -66,7 +92,7 @@ public class IndexManager {
 			Highlighter highlighter = buildHighlighter(query);
 			options.getIndexable().setHighlighter(highlighter);
 			
-			IndexReader reader = IndexReader.open(INDEX_DIR);
+			IndexReader reader = getReader();
 			Searcher searcher = new IndexSearcher(reader);
 			
 			TopDocs topDocs = searcher.search(query, null, options.getMaxResults(), options.getSort());
@@ -101,7 +127,28 @@ public class IndexManager {
 			throw new RuntimeException(ex);
 		}
 	}
+	
+	public static void remove(Serializable idObject) {
+		
+		try {
+			IndexWriter writer = getWriter();
+			writer.deleteDocuments(new Term("id", idObject.toString()));
+			writer.commit();
+			writer.close();
+		} catch (Exception ex) {
+			throw new RuntimeException("Não foi possível indexar: " + ex.getMessage(), ex);
+		}
+	}	
 
+	public static boolean dropIndex() {
+		try {
+			return deleteDir(INDEX_DIR);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return false;
+		}
+	}
+	
 	private static Highlighter buildHighlighter(final Query query) {
 		Scorer scorer = new QueryScorer(query);
 		Formatter formatter = new SimpleHTMLFormatter("<span class=\"highlight\">", "</span>");
@@ -109,5 +156,18 @@ public class IndexManager {
 		highlighter.setTextFragmenter(new SimpleFragmenter(50));
 		return highlighter;
 	}
+	
+    public static boolean deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i=0; i<children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        return dir.delete();
+    } 
 
 }

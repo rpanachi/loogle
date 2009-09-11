@@ -5,6 +5,7 @@ package com.oneupfordev.loogle.action;
 
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 import net.sourceforge.stripes.action.DefaultHandler;
 import net.sourceforge.stripes.action.ForwardResolution;
@@ -20,7 +21,9 @@ import net.sourceforge.stripes.validation.ValidateNestedProperties;
 import org.springframework.stereotype.Controller;
 
 import com.oneupfordev.loogle.domain.Materia;
+import com.oneupfordev.loogle.domain.MateriaIndex;
 import com.oneupfordev.loogle.domain.MateriaRepositorio;
+import com.oneupfordev.loogle.lucene.IndexManager;
 
 /**
  * MateriaActionBean
@@ -71,7 +74,8 @@ public class MateriaActionBean extends BaseActionBean {
 
 	public Resolution save() {
 		try {
-			materias.save(materia);
+			materia.setData(new Date());
+			materias.save(materia);			
 			return new RedirectResolution(MateriaActionBean.class);
 		} catch (Exception ex) {
 			getContext().getValidationErrors().addGlobalError(new SimpleError(ex.getMessage()));
@@ -89,5 +93,23 @@ public class MateriaActionBean extends BaseActionBean {
 			return getContext().getSourcePageResolution();
 		}
 	}
+	
+	public Resolution reindex() {
+		try {
+			List<MateriaIndex> indexables = new ArrayList<MateriaIndex>();
+			for (Materia materia : materias.all()) {
+				indexables.add(new MateriaIndex(materia));
+			}
+			IndexManager.dropIndex();
+			IndexManager.index(indexables);
+			getContext().getMessages().add(new SimpleMessage("Materias reindexadas com sucesso!"));
+			return new RedirectResolution(MateriaActionBean.class).flash(this);
+		} catch (Exception ex) {
+			getContext().getValidationErrors().addGlobalError(new SimpleError(ex.getMessage()));
+			return getContext().getSourcePageResolution();
+		}
+	}
+	
+	
 
 }

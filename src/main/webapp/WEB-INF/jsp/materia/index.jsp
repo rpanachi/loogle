@@ -18,6 +18,7 @@
 	<s:form beanclass="${actionBean.class}">
 		<s:submit name="create" value="Escrever"/>
 		<s:submit name="loadSample" value="Carregar Amostras"/>
+		<s:submit name="reindex" value="Reindexar!"/>
 	</s:form>
   </s:layout-component>
 </s:layout-render>
