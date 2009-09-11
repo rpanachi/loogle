@@ -24,6 +24,11 @@
       <property name="hibernate.c3p0.timeout" value="300"/>
       <property name="hibernate.c3p0.max_statements" value="50"/>
       <property name="hibernate.c3p0.idle_test_period" value="3000"/>
+      <!-- Hibernate Search http://docs.jboss.org/hibernate/stable/search/reference/en/html/ -->
+      <!--
+	  <property name="hibernate.search.default.directory_provider" value="org.hibernate.search.store.FSDirectoryProvider"/> 
+	  <property name="hibernate.search.default.indexBase" value="indexes"/>
+	  --> 
     </properties>
   </persistence-unit>
 </persistence>
