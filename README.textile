@@ -1,16 +1,5 @@
 h1. Overview Apache Lucene
 
-h2. 1up4developers
-
-h1. Capítulo de hoje
-
-* Apache Lucene
-* Conceitos
-* Configuração
-* Exemplos
-* Avançado
-* Ferramentas
-
 h1. 1up4developers?
 
 * Desenvolvedores
@@ -132,11 +121,11 @@ Este código buscará todos os Documentos que contém a palavra lucene no campo 
 
 h1. Configuração
 
-<pre>&lt;dependency&gt;
-    &lt;groupId&gt;org.apache.lucene&lt;/groupId&gt;
-    &lt;artifactId&gt;lucene-core&lt;/artifactId&gt;
-    &lt;version&gt;2.4.1&lt;/version&gt;
-&lt;/dependency&gt;</pre>
+<pre><dependency>
+    <groupId>org.apache.lucene</groupId>
+    <artifactId>lucene-core</artifactId>
+    <version>2.4.1</version>
+</dependency></pre>
 
 h1. Exemplo: indexando
 
