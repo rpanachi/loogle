@@ -1,7 +1,8 @@
 <%@ page import="org.apache.lucene.document.Document"%>
+<%@ page pageEncoding="UTF-8" %>
 <%@ include file="/WEB-INF/jsp/taglibs.jsp" %>
 
-<s:layout-render name="/WEB-INF/jsp/layout.jsp" title="Matérias - Loogle">
+<s:layout-render name="/WEB-INF/jsp/layout.jsp" title="MatÃ©rias - Loogle">
 
   <s:layout-component name="head">
 	<style>

@@ -106,17 +106,6 @@ public class IndexManager {
 				result.addResult(model);
 			}
 
-			//TODO TRATAR PAGINACAO
-			//result.setPaginas(Double.valueOf(Math.floor(docs.totalHits / pesquisa.getPorPagina())).intValue());
-			//result.setPaginaAtual(pesquisa.getPagina());
-			//int registroInicial = (pesquisa.getPagina() - 1) * pesquisa.getPorPagina();
-			//int registroFinal = registroInicial + pesquisa.getPorPagina();
-			//if (registroFinal > docs.totalHits)	registroFinal = docs.totalHits;
-			
-			//for(int i = registroInicial; i < registroFinal; i++) {
-			//	result.addResultado(searcher.doc(docs.scoreDocs[i].doc));
-			//}
-			
 			long end = System.currentTimeMillis();
 			result.setDuration(end - start);
 			

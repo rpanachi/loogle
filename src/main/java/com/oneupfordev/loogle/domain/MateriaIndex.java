@@ -56,7 +56,7 @@ public class MateriaIndex implements Indexable<Materia> {
 		String data = DateTools.dateToString(materia.getData(), DateTools.Resolution.SECOND);
 		return new Field[] {
 				new Field("id", materia.getId().toString(), Store.YES, Index.NOT_ANALYZED),
-				new Field("autor", materia.getAutor(), Store.NO, Index.NOT_ANALYZED),
+				new Field("autor", materia.getAutor(), Store.NO, Index.ANALYZED),
 				new Field("titulo", materia.getTitulo(), Store.NO, Index.ANALYZED),
 				new Field("texto", materia.getTexto(), Store.NO, Index.ANALYZED),
 				new Field("data", data, Store.NO, Index.NOT_ANALYZED)
